@@ -369,5 +369,54 @@
 </body>
 </html>
   </footer>
+<!-- 🔥 Firebase Firestore Submission Script -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAoy88ndkrmPWoupL6NgGdfoRWzxtRGZPs",
+    authDomain: "quickfixcrew-717cc.firebaseapp.com",
+    projectId: "quickfixcrew-717cc",
+    storageBucket: "quickfixcrew-717cc.appspot.com",
+    messagingSenderId: "907519125984",
+    appId: "1:907519125984:web:20eced6ae597eb454b2385"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector("#job-post-form form");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = form.name.value;
+      const service = form.service.value;
+      const address = form.address.value;
+      const description = form.description.value;
+      const preferredTime = form.preferred_time.value;
+
+      try {
+        await addDoc(collection(db, "job_submissions"), {
+          name,
+          service,
+          address,
+          description,
+          preferredTime,
+          timestamp: serverTimestamp()
+        });
+
+        alert("✅ Job submitted successfully!");
+        form.reset();
+      } catch (error) {
+        console.error("❌ Error submitting job:", error);
+        alert("Something went wrong. Please try again.");
+      }
+    });
+  });
+</script>
+
 </body>
 </html>
