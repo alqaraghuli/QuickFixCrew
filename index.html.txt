@@ -374,5 +374,79 @@
       });
     });
   </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAoy88ndkrmPWoupL6NgGdfoRWzxtRGZPs",
+    authDomain: "quickfixcrew-717cc.firebaseapp.com",
+    projectId: "quickfixcrew-717cc",
+    storageBucket: "quickfixcrew-717cc.appspot.com",
+    messagingSenderId: "907519125984",
+    appId: "1:907519125984:web:20eced6ae597eb454b2385"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let allTechs = [];
+
+  async function listTechnicians() {
+    const container = document.createElement("section");
+    container.className = "container";
+    container.innerHTML = `
+      <h2>Meet Our Technicians</h2>
+      <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px;">
+        <input type="text" id="filter-skill" placeholder="Filter by skill" style="flex:1; padding:12px; border-radius:6px; border:1px solid #ccc;" />
+        <input type="text" id="filter-location" placeholder="Filter by location" style="flex:1; padding:12px; border-radius:6px; border:1px solid #ccc;" />
+      </div>
+      <div id="tech-list"></div>
+    `;
+    document.body.insertBefore(container, document.querySelector("footer"));
+
+    const listDiv = container.querySelector("#tech-list");
+    listDiv.style.display = "grid";
+    listDiv.style.gridTemplateColumns = "repeat(auto-fit, minmax(240px, 1fr))";
+    listDiv.style.gap = "30px";
+    listDiv.style.marginTop = "20px";
+
+    const snapshot = await getDocs(collection(db, "technicians"));
+    allTechs = snapshot.docs.map(doc => doc.data());
+
+    renderTechnicians(allTechs);
+
+    // 🧹 Filter Handlers
+    document.getElementById("filter-skill").addEventListener("input", () => {
+      const val = document.getElementById("filter-skill").value.toLowerCase();
+      const filtered = allTechs.filter(t => t.skills.toLowerCase().includes(val));
+      renderTechnicians(filtered);
+    });
+
+    document.getElementById("filter-location").addEventListener("input", () => {
+      const val = document.getElementById("filter-location").value.toLowerCase();
+      const filtered = allTechs.filter(t => t.location.toLowerCase().includes(val));
+      renderTechnicians(filtered);
+    });
+
+    function renderTechnicians(data) {
+      listDiv.innerHTML = "";
+      data.forEach(tech => {
+        listDiv.innerHTML += `
+          <div style="background:#fff;padding:15px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.1);text-align:center">
+            <img src="${tech.photoURL}" alt="${tech.name}" style="width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:10px" />
+            <h3 style="color:#007acc">${tech.name}</h3>
+            <p><strong>Skills:</strong> ${tech.skills}</p>
+            <p><strong>Location:</strong> ${tech.location}</p>
+            <a href="technicians.html?id=${tech.id}" style="display:inline-block;margin-top:10px;padding:10px 20px;background:#ff9500;color:white;border-radius:6px;text-decoration:none">View Profile</a>
+          </div>
+        `;
+      });
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", listTechnicians);
+</script>
+
 </body>
 </html>
