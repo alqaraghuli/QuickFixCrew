@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QuickFixCrew - Login</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 50px;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    input, button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    h2 {
+      text-align: center;
+    }
+    button {
+      background-color: #007acc;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005f99;
+    }
+    .logout-btn {
+      background-color: #ff4444;
+    }
+    .logout-btn:hover {
+      background-color: #cc0000;
+    }
+    #status {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Login / Register</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="register">Register</button>
+    <button id="login">Login</button>
+    <button id="logout" class="logout-btn" style="display: none;">Logout</button>
+    <p id="status">Not logged in</p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAoy88ndkrmPWoupL6NgGdfoRWzxtRGZPs",
+      authDomain: "quickfixcrew-717cc.firebaseapp.com",
+      projectId: "quickfixcrew-717cc",
+      storageBucket: "quickfixcrew-717cc.appspot.com",
+      messagingSenderId: "907519125984",
+      appId: "1:907519125984:web:20eced6ae597eb454b2385"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const statusText = document.getElementById("status");
+    const logoutBtn = document.getElementById("logout");
+
+    document.getElementById("register").addEventListener("click", () => {
+      createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
+        .then(userCredential => {
+          statusText.textContent = "✅ Registered and logged in!";
+        })
+        .catch(error => {
+          statusText.textContent = "❌ " + error.message;
+        });
+    });
+
+    document.getElementById("login").addEventListener("click", () => {
+      signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
+        .then(userCredential => {
+          statusText.textContent = "✅ Logged in!";
+        })
+        .catch(error => {
+          statusText.textContent = "❌ " + error.message;
+        });
+    });
+
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth).then(() => {
+        statusText.textContent = "👋 Logged out.";
+      });
+    });
+
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        logoutBtn.style.display = "block";
+        statusText.textContent = `👤 Logged in as: ${user.email}`;
+      } else {
+        logoutBtn.style.display = "none";
+        statusText.textContent = "Not logged in";
+      }
+    });
+  </script>
+</body>
+</html>
