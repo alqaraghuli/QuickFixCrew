@@ -111,53 +111,6 @@
       background: #005f99;
     }
 
-    /* Popular Services Styles */
-    #popular-services {
-      max-width: 900px;
-      margin: 50px auto 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-      text-align: center;
-    }
-
-    #popular-services h2 {
-      width: 100%;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 700;
-      color: #007acc;
-      margin-bottom: 25px;
-    }
-
-    .service {
-      background: white;
-      flex: 1 1 120px;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      cursor: default;
-      user-select: none;
-      transition: transform 0.2s ease;
-      max-width: 140px;
-    }
-
-    .service:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
-    .service-icon {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-    }
-
-    .service-name {
-      font-weight: 600;
-      font-size: 1.1rem;
-      color: #333;
-    }
-
     section h2 {
       text-align: center;
       margin: 50px 0 30px 0;
@@ -239,15 +192,14 @@
   </style>
 </head>
 <body>
-  <header>
+    <header>
     <div class="container">
       <h1>QuickFixCrew</h1>
       <p>Your Trusted Repair Crew — Fast, Friendly, Reliable</p>
-      <a href="#job-post-form" class="btn-primary">Post a Job</a>
+      <a href="post-job.html" class="btn-primary">Post a Job</a>
       <a href="technicians.html" class="btn-primary">Hire a Technician</a>
     </div>
   </header>
-
   <section id="search-section">
     <form action="#" method="GET">
       <select name="service" aria-label="Select service">
@@ -266,43 +218,6 @@
     </form>
   </section>
 
-  <!-- Popular Services Section Added Here -->
-  <section id="popular-services" class="container">
-    <h2>Popular Services</h2>
-    <div class="service" title="Plumbing">
-      <div class="service-icon">🔧</div>
-      <div class="service-name">Plumbing</div>
-    </div>
-    <div class="service" title="Electrical">
-      <div class="service-icon">💡</div>
-      <div class="service-name">Electrical</div>
-    </div>
-    <div class="service" title="Painting">
-      <div class="service-icon">🎨</div>
-      <div class="service-name">Painting</div>
-    </div>
-    <div class="service" title="Furniture Assembly">
-      <div class="service-icon">🛠️</div>
-      <div class="service-name">Furniture Assembly</div>
-    </div>
-    <div class="service" title="General Repairs">
-      <div class="service-icon">🔨</div>
-      <div class="service-name">General Repairs</div>
-    </div>
-    <div class="service" title="Appliance Installation">
-      <div class="service-icon">⚙️</div>
-      <div class="service-name">Appliance Installation</div>
-    </div>
-    <div class="service" title="Flooring">
-      <div class="service-icon">🪵</div>
-      <div class="service-name">Flooring</div>
-    </div>
-    <div class="service" title="Yard Work">
-      <div class="service-icon">🌿</div>
-      <div class="service-name">Yard Work</div>
-    </div>
-  </section>
-
   <section id="how-it-works" class="container">
     <h2>How It Works</h2>
     <div class="step">
@@ -318,47 +233,17 @@
       <p>Hire, complete your job, and rate your experience for future customers.</p>
     </div>
   </section>
-
-  <!-- 🔧 Job Posting Form START -->
-  <section id="job-post-form" style="padding: 40px 20px; background: #ffffff; max-width: 800px; margin: 40px auto; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-    <h2 style="text-align: center; color: #2e86ab; margin-bottom: 30px;">Post a Job</h2>
-    <form id="jobForm" style="display: flex; flex-direction: column; gap: 20px;">
-      <input type="text" name="name" placeholder="Your Name" required style="padding: 12px;" />
-      <select name="service" required style="padding: 12px;">
-        <option value="">Select Service Type</option>
-        <option value="plumbing">Plumbing</option>
-        <option value="electrical">Electrical</option>
-        <option value="painting">Painting</option>
-        <option value="furniture">Furniture Assembly</option>
-        <option value="repairs">General Repairs</option>
-        <option value="flooring">Flooring</option>
-        <option value="yard">Yard Work</option>
-      </select>
-      <textarea name="description" rows="4" placeholder="Job Description" required style="padding: 12px;"></textarea>
-      <input type="datetime-local" name="preferredTime" required style="padding: 12px;" />
-      <button type="submit" style="background: #2e86ab; color: white; padding: 14px; font-size: 1.1rem; border:none; border-radius:6px; cursor:pointer;">Submit Job</button>
-    </form>
-  </section>
-  <!-- 🔧 Job Posting Form END -->
-
-  <section id="job-listings" class="container">
-    <h2>Recent Job Posts</h2>
-    <div id="job-container">
-      <p>Loading jobs...</p>
-    </div>
-  </section>
-
-  <!-- 👷‍♂️ Technician Media Upload Section START -->
-  <section id="tech-upload" style="padding: 40px 20px; background: #ffffff; max-width: 800px; margin: 60px auto 100px auto; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-    <h2 style="text-align: center; color: #2e86ab; margin-bottom: 30px;">Technician Media Upload</h2>
-    <form id="uploadForm" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 20px;">
-      <input type="text" id="techName" placeholder="Technician Name" required style="padding: 12px;" />
-      <textarea id="techBio" placeholder="Short Description" rows="3" required style="padding: 12px;"></textarea>
-      <input type="file" id="techMedia" accept="image/*,video/*" required style="padding: 12px;" />
-      <button type="submit" style="background: #ff9500; color: white; padding: 14px; font-size: 1.1rem; border:none; border-radius:6px; cursor:pointer;">Upload Media</button>
-    </form>
-  </section>
-  <!-- 👷‍♂️ Technician Media Upload Section END -->
+ <!-- 👷‍♂️ Technician Media Upload Section START -->
+<section id="tech-upload" style="padding: 40px 20px; background: #ffffff; max-width: 800px; margin: 60px auto; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+  <h2 style="text-align: center; color: #2e86ab; margin-bottom: 30px;">Technician Media Upload</h2>
+  <form id="uploadForm" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 20px;">
+    <input type="text" id="techName" placeholder="Technician Name" required style="padding: 12px;" />
+    <textarea id="techBio" placeholder="Short Description" rows="3" required style="padding: 12px;"></textarea>
+    <input type="file" id="techMedia" accept="image/*,video/*" required style="padding: 12px;" />
+    <button type="submit" style="background: #ff9500; color: white; padding: 14px; font-size: 1.1rem;">Upload Media</button>
+  </form>
+</section>
+<!-- 👷‍♂️ Technician Media Upload Section END -->
 
   <footer>
     <p>© 2025 QuickFixCrew. All rights reserved. | <a href="#">Terms of Service</a> | <a href="#">Privacy Policy</a></p>
@@ -367,12 +252,12 @@
       <a href="#">Twitter</a> |
       <a href="#">LinkedIn</a>
     </p>
+
   </footer>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
-    import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
-    import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js';
+    import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
 
     const firebaseConfig = {
       apiKey: "AIzaSyAoy88ndkrmPWoupL6NgGdfoRWzxtRGZPs",
@@ -385,114 +270,34 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const storage = getStorage(app);
 
-    // Load Job Posts and display
     const container = document.getElementById("job-container");
     async function loadJobs() {
-      try {
-        const q = query(collection(db, "job_submissions"), orderBy("timestamp", "desc"));
-        const snapshot = await getDocs(q);
+      const q = query(collection(db, "job_submissions"), orderBy("timestamp", "desc"));
+      const snapshot = await getDocs(q);
 
-        if (snapshot.empty) {
-          container.innerHTML = "<p>No job posts available yet.</p>";
-          return;
-        }
-
-        container.innerHTML = "";
-        snapshot.forEach(doc => {
-          const job = doc.data();
-
-          // Handle Firestore timestamp conversion gracefully
-          let preferredDate = "N/A";
-          if (job.preferredTime && job.preferredTime.seconds) {
-            preferredDate = new Date(job.preferredTime.seconds * 1000).toLocaleString();
-          } else if (typeof job.preferredTime === "string") {
-            preferredDate = new Date(job.preferredTime).toLocaleString();
-          }
-
-          container.innerHTML += `
-            <div class="job-post">
-              <h3>${job.service || "No Service"}</h3>
-              <p><strong>Name:</strong> ${job.name || "Anonymous"}</p>
-              <p><strong>Description:</strong> ${job.description || ""}</p>
-              <p><strong>Preferred Time:</strong> ${preferredDate}</p>
-            </div>
-          `;
-        });
-      } catch (error) {
-        container.innerHTML = "<p>Error loading jobs.</p>";
-        console.error("Error loading jobs:", error);
-      }
-    }
-    loadJobs();
-
-    // Handle Job Form Submission
-    const jobForm = document.getElementById("jobForm");
-    jobForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const formData = new FormData(jobForm);
-      const jobData = {
-        name: formData.get("name")?.trim(),
-        service: formData.get("service"),
-        description: formData.get("description")?.trim(),
-        preferredTime: formData.get("preferredTime"),
-        timestamp: serverTimestamp()
-      };
-
-      try {
-        await addDoc(collection(db, "job_submissions"), jobData);
-        alert("✅ Job posted successfully!");
-        jobForm.reset();
-        loadJobs(); // Refresh job listings after new submission
-      } catch (error) {
-        console.error("Failed to submit job:", error);
-        alert("❌ Failed to submit job. Please try again.");
-      }
-    });
-
-    // Handle Technician Media Upload
-    const uploadForm = document.getElementById("uploadForm");
-    uploadForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const name = document.getElementById("techName").value.trim();
-      const bio = document.getElementById("techBio").value.trim();
-      const fileInput = document.getElementById("techMedia");
-      const file = fileInput.files[0];
-
-      if (!file) {
-        alert("Please select a media file.");
+      if (snapshot.empty) {
+        container.innerHTML = '<p>No job posts available yet.</p>';
         return;
       }
 
-      try {
-        const filePath = `tech_media/${Date.now()}_${file.name}`;
-        const fileRef = ref(storage, filePath);
+      container.innerHTML = "";
+      snapshot.forEach(doc => {
+        const job = doc.data();
+        container.innerHTML += `
+          <div class="job-post">
+            <h3>${job.service}</h3>
+            <p><strong>Name:</strong> ${job.name}</p>
+            <!-- Address removed from display -->
+            <p><strong>Description:</strong> ${job.description}</p>
+            <p><strong>Preferred Time:</strong> ${new Date(job.preferredTime).toLocaleString()}</p>
+          </div>
+        `;
+      });
+    }
 
-        // Upload file to Firebase Storage
-        await uploadBytes(fileRef, file);
-
-        // Get the downloadable URL
-        const mediaURL = await getDownloadURL(fileRef);
-
-        // Add metadata to Firestore
-        await addDoc(collection(db, "technician_media"), {
-          name,
-          bio,
-          mediaURL,
-          mediaType: file.type.startsWith("video") ? "video" : "image",
-          timestamp: serverTimestamp()
-        });
-
-        alert("✅ Technician media uploaded successfully!");
-        uploadForm.reset();
-      } catch (err) {
-        console.error("Upload failed:", err);
-        alert("❌ Upload failed. Please try again.");
-      }
-    });
+    loadJobs();
   </script>
+
 </body>
 </html>

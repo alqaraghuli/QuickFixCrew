@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Post a Job | QuickFixCrew</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAoy88ndkrmPWoupL6NgGdfoRWzxtRGZPs",
+      authDomain: "quickfixcrew-717cc.firebaseapp.com",
+      projectId: "quickfixcrew-717cc",
+      storageBucket: "quickfixcrew-717cc.appspot.com",
+      messagingSenderId: "907519125984",
+      appId: "1:907519125984:web:20eced6ae597eb454b2385"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.db = db;
+    window.addDoc = addDoc;
+    window.collection = collection;
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f4f7f9;
+      color: #333;
+    }
+
+    nav {
+      background-color: #007acc;
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    header {
+      background: #007acc;
+      padding: 20px;
+      text-align: center;
+      color: white;
+    }
+
+    .form-container {
+      background: white;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #007acc;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .service-card {
+      text-align: center;
+      padding: 20px;
+      border-radius: 10px;
+      background: #f9fafd;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .service-card:hover {
+      background: #e1f0fa;
+      transform: scale(1.03);
+    }
+
+    .service-card.active {
+      border: 2px solid #007acc;
+      background: #d1ecff;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="datetime-local"],
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 25px;
+      width: 100%;
+      padding: 14px;
+      background: #007acc;
+      border: none;
+      color: white;
+      font-size: 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #005f99;
+    }
+
+    #result {
+      background: #e9f7ef;
+      margin-top: 30px;
+      padding: 20px;
+      border: 1px solid #2ecc71;
+      border-radius: 10px;
+      display: none;
+    }
+
+    #result h3 {
+      color: #2ecc71;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="post-job.html">Post a Job</a>
+    <a href="technicians.html">Hire a Technician</a>
+    <a href="dashboard.html">Dashboard</a>
+  </nav>
+
+  <!-- Header -->
+  <header>
+    <h1>Post a Job</h1>
+    <p>Select a service and tell us what you need</p>
+  </header>
+
+  <!-- Job Form -->
+  <div class="form-container">
+    <h2>Choose a Service</h2>
+    <div class="services-grid" id="services">
+      <div class="service-card" data-service="Plumbing">🔧<br>Plumbing</div>
+      <div class="service-card" data-service="Electrical">💡<br>Electrical</div>
+      <div class="service-card" data-service="Painting">🎨<br>Painting</div>
+      <div class="service-card" data-service="Furniture Assembly">🪑<br>Furniture Assembly</div>
+      <div class="service-card" data-service="General Repairs">🔨<br>General Repairs</div>
+      <div class="service-card" data-service="Appliance Installation">⚙️<br>Appliance Installation</div>
+      <div class="service-card" data-service="Flooring">🪵<br>Flooring</div>
+      <div class="service-card" data-service="Yard Work">🌿<br>Yard Work</div>
+      <div class="service-card" data-service="Other">❓<br>Other</div>
+    </div>
+
+    <form id="jobForm">
+      <input type="hidden" id="service" name="service" required>
+
+      <label for="name">Your Name:</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="description">Job Description:</label>
+      <textarea id="description" name="description" rows="4" required></textarea>
+
+      <label for="datetime">Preferred Date & Time:</label>
+      <input type="datetime-local" id="datetime" name="datetime" required />
+
+      <button type="submit">Submit Job Request</button>
+    </form>
+
+    <!-- Display Submitted Result -->
+    <div id="result"></div>
+  </div>
+
+  <!-- JavaScript -->
+ <script type="module">
+  const cards = document.querySelectorAll('.service-card');
+  const serviceInput = document.getElementById('service');
+  const resultDiv = document.getElementById('result');
+
+  // Load previous submission from localStorage
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedData = localStorage.getItem('jobSubmission');
+    if (savedData) {
+      const data = JSON.parse(savedData);
+      displayResult(data);
+    }
+  });
+
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      cards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      serviceInput.value = card.getAttribute('data-service');
+    });
+  });
+
+  document.getElementById('jobForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById('name').value;
+    const description = document.getElementById('description').value;
+    const datetime = document.getElementById('datetime').value;
+    const service = document.getElementById('service').value;
+
+    if (!service) {
+      alert("Please select a service first.");
+      return;
+    }
+
+    // Save to Firebase
+    try {
+      await addDoc(collection(db, "job_submissions"), {
+        name,
+        service,
+        description,
+        datetime,
+        createdAt: new Date()
+      });
+
+      const submission = { name, service, description, datetime };
+
+      // Save to localStorage
+      localStorage.setItem('jobSubmission', JSON.stringify(submission));
+
+      displayResult(submission);
+      this.reset();
+      cards.forEach(c => c.classList.remove('active'));
+    } catch (error) {
+      alert("Error submitting job: " + error.message);
+    }
+  });
+
+  function displayResult({ name, service, description, datetime }) {
+    resultDiv.innerHTML = `
+      <h3>✅ Job Submitted!</h3>
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Service:</strong> ${service}</p>
+      <p><strong>Description:</strong> ${description}</p>
+      <p><strong>Date & Time:</strong> ${datetime}</p>
+    `;
+    resultDiv.style.display = 'block';
+  }
+</script>
+</body>
+</html>
