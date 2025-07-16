@@ -192,6 +192,12 @@
   </style>
 </head>
 <body>
+<header style="background: #007acc; color: white; padding: 10px 20px; display: flex; justify-content: flex-end; align-items: center;">
+  <div style="margin-left: auto;">
+    <button id="loginBtn" class="btn-primary" style="margin-right: 10px;">Login / Register</button>
+    <button id="logoutBtn" class="btn-primary" style="display: none;">Logout</button>
+  </div>
+</header>
     <header>
     <div class="container">
       <h1>QuickFixCrew</h1>
@@ -201,22 +207,26 @@
     </div>
   </header>
   <section id="search-section">
-    <form action="#" method="GET">
-      <select name="service" aria-label="Select service">
-        <option value="" disabled selected>Choose Service</option>
-        <option value="plumbing">Plumbing</option>
-        <option value="electrical">Electrical</option>
-        <option value="painting">Painting</option>
-        <option value="furniture-assembly">Furniture Assembly</option>
-        <option value="general-repairs">General Repairs</option>
-        <option value="appliance-installation">Appliance Installation</option>
-        <option value="flooring">Flooring</option>
-        <option value="yard-work">Yard Work</option>
-      </select>
-      <input type="text" name="location" placeholder="Enter your location" aria-label="Location" />
-      <button type="submit" id="search-btn">Search</button>
-    </form>
-  </section>
+  <form id="searchForm" action="#" method="GET">
+    <select id="service" name="service" aria-label="Select service" required>
+      <option value="" disabled selected>Choose Service</option>
+      <option value="plumbing">Plumbing</option>
+      <option value="electrical">Electrical</option>
+      <option value="painting">Painting</option>
+      <option value="furniture-assembly">Furniture Assembly</option>
+      <option value="general-repairs">General Repairs</option>
+      <option value="appliance-installation">Appliance Installation</option>
+      <option value="flooring">Flooring</option>
+      <option value="yard-work">Yard Work</option>
+      <option value="other">Other</option>
+    </select>
+
+    <input type="text" id="location" name="location" placeholder="Enter your location" aria-label="Location" required />
+    <button type="submit" id="search-btn">Search</button>
+  </form>
+
+  <div id="searchResults" style="margin-top: 20px;"></div>
+</section>
 
   <section id="how-it-works" class="container">
     <h2>How It Works</h2>
@@ -244,6 +254,24 @@
   </form>
 </section>
 <!-- 👷‍♂️ Technician Media Upload Section END -->
+<!-- 🔐 Auth Modal -->
+<div id="authModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000;">
+  <div style="background:white; padding:30px; border-radius:10px; width:90%; max-width:400px; position:relative;">
+    <h2 style="color:#007acc; text-align:center;">Login / Register</h2>
+
+    <form id="login-form" style="margin-bottom:20px;">
+      <input type="email" id="email" placeholder="Email" required style="width:100%; padding:10px; margin-top:10px;">
+      <input type="password" id="password" placeholder="Password" required style="width:100%; padding:10px; margin-top:10px;">
+      <button type="submit" style="width:100%; padding:12px; background:#007acc; color:white; margin-top:15px;">Login</button>
+    </form>
+
+    <form id="register-form">
+      <input type="email" id="reg-email" placeholder="New Email" required style="width:100%; padding:10px; margin-top:10px;">
+      <input type="password" id="reg-password" placeholder="New Password" required style="width:100%; padding:10px; margin-top:10px;">
+      <button type="submit" style="width:100%; padding:12px; background:#ff9500; color:white; margin-top:15px;">Register</button>
+    </form>
+
+    <button id="googleSignIn" style="
 
   <footer>
     <p>© 2025 QuickFixCrew. All rights reserved. | <a href="#">Terms of Service</a> | <a href="#">Privacy Policy</a></p>
@@ -256,48 +284,131 @@
   </footer>
 
   <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
-    import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+    GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, collection, query, where, getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAoy88ndkrmPWoupL6NgGdfoRWzxtRGZPs",
-      authDomain: "quickfixcrew-717cc.firebaseapp.com",
-      projectId: "quickfixcrew-717cc",
-      storageBucket: "quickfixcrew-717cc.appspot.com",
-      messagingSenderId: "907519125984",
-      appId: "1:907519125984:web:20eced6ae597eb454b2385"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyAoy88ndkrmPWoupL6NgGdfoRWzxtRGZPs",
+    authDomain: "quickfixcrew-717cc.firebaseapp.com",
+    projectId: "quickfixcrew-717cc",
+    storageBucket: "quickfixcrew-717cc.appspot.com",
+    messagingSenderId: "907519125984",
+    appId: "1:907519125984:web:20eced6ae597eb454b2385"
+  };
 
-    const app = initializeApp(firebaseConfig);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  window.onload = () => {
+    // 🔎 Search Functionality
     const db = getFirestore(app);
+    const searchForm = document.getElementById("searchForm");
+    const searchResults = document.getElementById("searchResults");
 
-    const container = document.getElementById("job-container");
-    async function loadJobs() {
-      const q = query(collection(db, "job_submissions"), orderBy("timestamp", "desc"));
-      const snapshot = await getDocs(q);
+    if (searchForm) {
+      searchForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const service = document.getElementById("service").value.toLowerCase();
+        const location = document.getElementById("location").value.toLowerCase();
 
-      if (snapshot.empty) {
-        container.innerHTML = '<p>No job posts available yet.</p>';
-        return;
-      }
+        searchResults.innerHTML = "Searching...";
 
-      container.innerHTML = "";
-      snapshot.forEach(doc => {
-        const job = doc.data();
-        container.innerHTML += `
-          <div class="job-post">
-            <h3>${job.service}</h3>
-            <p><strong>Name:</strong> ${job.name}</p>
-            <!-- Address removed from display -->
-            <p><strong>Description:</strong> ${job.description}</p>
-            <p><strong>Preferred Time:</strong> ${new Date(job.preferredTime).toLocaleString()}</p>
-          </div>
-        `;
+        const q = query(
+          collection(db, "technicians"),
+          where("service", "==", service),
+          where("location", "==", location)
+        );
+
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+          searchResults.innerHTML = "<p>No technicians found.</p>";
+          return;
+        }
+
+        let html = "<h3>Results:</h3><ul>";
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          html += `<li><strong>${data.name}</strong> - ${data.service} in ${data.location}</li>`;
+        });
+        html += "</ul>";
+        searchResults.innerHTML = html;
       });
     }
 
-    loadJobs();
-  </script>
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const authModal = document.getElementById("authModal");
+    const userInfo = document.getElementById("user-info");
 
+    // Show Modal
+    loginBtn.addEventListener("click", () => {
+      authModal.style.display = "flex";
+    });
+
+    // Auth State Listener
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        userInfo.innerText = `Logged in as: ${user.email || user.displayName}`;
+        loginBtn.style.display = "none";
+        logoutBtn.style.display = "block";
+      } else {
+        userInfo.innerText = "Not logged in";
+        loginBtn.style.display = "block";
+        logoutBtn.style.display = "none";
+      }
+    });
+
+    // Login
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        authModal.style.display = "none";
+      } catch (err) {
+        alert("Login error: " + err.message);
+      }
+    });
+
+    // Register
+    document.getElementById("register-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("reg-email").value;
+      const password = document.getElementById("reg-password").value;
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        alert("Registration successful!");
+        authModal.style.display = "none";
+      } catch (err) {
+        alert("Registration error: " + err.message);
+      }
+    });
+
+    // Google Sign-In
+    document.getElementById("googleSignIn").addEventListener("click", async () => {
+      try {
+        await signInWithPopup(auth, provider);
+        authModal.style.display = "none";
+      } catch (err) {
+        alert("Google sign-in error: " + err.message);
+      }
+    });
+
+    // Logout
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      alert("Logged out");
+    });
+  };
+</script>
 </body>
 </html>
