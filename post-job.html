@@ -242,20 +242,4 @@
     const snapshot = await getDocs(collection(db, "job_submissions"));
     snapshot.forEach(doc => {
       const data = doc.data();
-      const div = document.createElement('div');
-      div.className = 'post';
-      div.innerHTML = `
-        <strong>Name:</strong> ${data.name}<br>
-        <strong>Service:</strong> ${data.service}<br>
-        <strong>Description:</strong> ${data.description}
-        ${data.imageUrl ? `<br><img class="job-image" src="${data.imageUrl}" alt="Job Image" />` : ''}
-      `;
-      jobList.appendChild(div);
-    });
-  }
-
-  loadJobs();
-</script>
-
-</body>
-</html>
+      const div = document.createElement(
