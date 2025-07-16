@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -101,13 +100,55 @@
       margin-top: 10px;
       border-radius: 6px;
     }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .service-card {
+      text-align: center;
+      padding: 20px;
+      border-radius: 10px;
+      background: #f9fafd;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .service-card:hover {
+      background: #e1f0fa;
+      transform: scale(1.03);
+    }
+
+    .service-card.active {
+      border: 2px solid #007acc;
+      background: #d1ecff;
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
   <h1>Post a Job</h1>
+
+  <h2>Choose a Service</h2>
+  <div class="services-grid" id="services">
+    <div class="service-card" data-service="Plumbing">🔧<br>Plumbing</div>
+    <div class="service-card" data-service="Electrical">💡<br>Electrical</div>
+    <div class="service-card" data-service="Painting">🎨<br>Painting</div>
+    <div class="service-card" data-service="Furniture Assembly">🪑<br>Furniture Assembly</div>
+    <div class="service-card" data-service="General Repairs">🔨<br>General Repairs</div>
+    <div class="service-card" data-service="Appliance Installation">⚙️<br>Appliance Installation</div>
+    <div class="service-card" data-service="Flooring">🪵<br>Flooring</div>
+    <div class="service-card" data-service="Yard Work">🌿<br>Yard Work</div>
+    <div class="service-card" data-service="Other">❓<br>Other</div>
+  </div>
+
   <form id="jobForm">
+    <input type="hidden" id="service" required />
     <label for="name">Your Name:</label>
     <input type="text" id="name" required />
 
@@ -127,6 +168,17 @@
 </div>
 
 <script type="module">
+  const cards = document.querySelectorAll('.service-card');
+  const serviceInput = document.getElementById('service');
+
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      cards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      serviceInput.value = card.getAttribute('data-service');
+    });
+  });
+
   const jobForm = document.getElementById('jobForm');
   const jobList = document.getElementById('jobList');
 
@@ -136,6 +188,7 @@
     const name = document.getElementById('name').value;
     const description = document.getElementById('description').value;
     const imageFile = document.getElementById('image').files[0];
+    const service = serviceInput.value;
     let imageUrl = "";
 
     try {
@@ -148,13 +201,15 @@
       await addDoc(collection(db, "job_submissions"), {
         name,
         description,
+        service,
         imageUrl,
         createdAt: new Date()
       });
 
       alert("Job Submitted Successfully!");
       jobForm.reset();
-      loadJobs(); // reload jobs
+      cards.forEach(c => c.classList.remove('active'));
+      loadJobs();
     } catch (error) {
       alert("Error: " + error.message);
     }
@@ -169,6 +224,7 @@
       div.className = 'post';
       div.innerHTML = `
         <strong>Name:</strong> ${data.name}<br>
+        <strong>Service:</strong> ${data.service}<br>
         <strong>Description:</strong> ${data.description}
         ${data.imageUrl ? `<br><img class="job-image" src="${data.imageUrl}" alt="Job Image" />` : ''}
       `;
@@ -176,7 +232,6 @@
     });
   }
 
-  // Load posts on page load
   loadJobs();
 </script>
 
