@@ -202,74 +202,74 @@
   </div>
 
   <!-- JavaScript -->
- <script type="module">
-  const cards = document.querySelectorAll('.service-card');
-  const serviceInput = document.getElementById('service');
-  const resultDiv = document.getElementById('result');
+  <script type="module">
+    const cards = document.querySelectorAll('.service-card');
+    const serviceInput = document.getElementById('service');
+    const resultDiv = document.getElementById('result');
 
-  // Load previous submission from localStorage
-  window.addEventListener('DOMContentLoaded', () => {
-    const savedData = localStorage.getItem('jobSubmission');
-    if (savedData) {
-      const data = JSON.parse(savedData);
-      displayResult(data);
-    }
-  });
-
-  cards.forEach(card => {
-    card.addEventListener('click', () => {
-      cards.forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
-      serviceInput.value = card.getAttribute('data-service');
+    // Load previous submission from localStorage
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedData = localStorage.getItem('jobSubmission');
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        displayResult(data);
+      }
     });
-  });
 
-  document.getElementById('jobForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    const name = document.getElementById('name').value;
-    const description = document.getElementById('description').value;
-    const datetime = document.getElementById('datetime').value;
-    const service = document.getElementById('service').value;
-
-    if (!service) {
-      alert("Please select a service first.");
-      return;
-    }
-
-    // Save to Firebase
-    try {
-      await addDoc(collection(db, "job_submissions"), {
-        name,
-        service,
-        description,
-        datetime,
-        createdAt: new Date()
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        cards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        serviceInput.value = card.getAttribute('data-service');
       });
+    });
 
-      const submission = { name, service, description, datetime };
+    document.getElementById('jobForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
 
-      // Save to localStorage
-      localStorage.setItem('jobSubmission', JSON.stringify(submission));
+      const name = document.getElementById('name').value;
+      const description = document.getElementById('description').value;
+      const datetime = document.getElementById('datetime').value;
+      const service = document.getElementById('service').value;
 
-      displayResult(submission);
-      this.reset();
-      cards.forEach(c => c.classList.remove('active'));
-    } catch (error) {
-      alert("Error submitting job: " + error.message);
+      if (!service) {
+        alert("Please select a service first.");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "job_submissions"), {
+          name,
+          service,
+          description,
+          datetime,
+          createdAt: new Date()
+        });
+
+        const submission = { name, service, description, datetime };
+
+        // Save to localStorage
+        localStorage.setItem('jobSubmission', JSON.stringify(submission));
+
+        // 🧼 Clear and show latest
+        displayResult(submission);
+        this.reset();
+        cards.forEach(c => c.classList.remove('active'));
+      } catch (error) {
+        alert("Error submitting job: " + error.message);
+      }
+    });
+
+    function displayResult({ name, service, description, datetime }) {
+      resultDiv.innerHTML = `
+        <h3>✅ Job Submitted!</h3>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Service:</strong> ${service}</p>
+        <p><strong>Description:</strong> ${description}</p>
+        <p><strong>Date & Time:</strong> ${datetime}</p>
+      `;
+      resultDiv.style.display = 'block';
     }
-  });
-
-  function displayResult({ name, service, description, datetime }) {
-    resultDiv.innerHTML = `
-      <h3>✅ Job Submitted!</h3>
-      <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Service:</strong> ${service}</p>
-      <p><strong>Description:</strong> ${description}</p>
-      <p><strong>Date & Time:</strong> ${datetime}</p>
-    `;
-    resultDiv.style.display = 'block';
-  }
-</script>
+  </script>
 </body>
 </html>
