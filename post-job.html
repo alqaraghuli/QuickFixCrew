@@ -266,7 +266,7 @@
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Service:</strong> ${service}</p>
         <p><strong>Description:</strong> ${description}</p>
-        <p><strong>Date & Time:</strong> ${datetime}</p>
+        <p><strong>Date & Time:</strong> ${datetime.replace('T', ' ')}</p>
       `;
       resultDiv.style.display = 'block';
     }
