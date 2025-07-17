@@ -269,6 +269,13 @@
       <input type="email" id="reg-email" placeholder="New Email" required style="width:100%; padding:10px; margin-top:10px;">
       <input type="password" id="reg-password" placeholder="New Password" required style="width:100%; padding:10px; margin-top:10px;">
       <button type="submit" style="width:100%; padding:12px; background:#ff9500; color:white; margin-top:15px;">Register</button>
+<div style="margin-top: 20px; text-align: center;">
+  <p>or</p>
+  <button id="googleSignIn" style="background-color: #db4437; color: white; padding: 12px; border: none; border-radius: 4px; width: 100%; font-size: 1rem; cursor: pointer;">
+    Sign in with Google
+  </button>
+</div>
+
     </form>
 
     <button id="googleSignIn" style="
@@ -283,15 +290,15 @@
 
   </footer>
 
-  <script type="module">
+ <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
     getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
     GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-  getFirestore, collection, query, where, getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import {
+    getFirestore, collection, query, where, getDocs, doc, getDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAoy88ndkrmPWoupL6NgGdfoRWzxtRGZPs",
@@ -304,14 +311,18 @@ import {
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
   window.onload = () => {
-    // 🔎 Search Functionality
-    const db = getFirestore(app);
     const searchForm = document.getElementById("searchForm");
     const searchResults = document.getElementById("searchResults");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const authModal = document.getElementById("authModal");
+    const userInfo = document.getElementById("user-info");
 
+    // 🔎 Search Functionality
     if (searchForm) {
       searchForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -343,11 +354,6 @@ import {
       });
     }
 
-    const loginBtn = document.getElementById("loginBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const authModal = document.getElementById("authModal");
-    const userInfo = document.getElementById("user-info");
-
     // Show Modal
     loginBtn.addEventListener("click", () => {
       authModal.style.display = "flex";
@@ -366,18 +372,20 @@ import {
       }
     });
 
-    // Login
-    document.getElementById("login-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        authModal.style.display = "none";
-      } catch (err) {
-        alert("Login error: " + err.message);
-      }
-    });
+// Email/Password Login
+   // Login
+document.getElementById("login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    authModal.style.display = "none";
+    window.location.href = "Techniciansdashboard.html"; // Redirect any user
+  } catch (err) {
+    alert("Login error: " + err.message);
+  }
+});
 
     // Register
     document.getElementById("register-form").addEventListener("submit", async (e) => {
@@ -395,18 +403,20 @@ import {
 
     // Google Sign-In
     document.getElementById("googleSignIn").addEventListener("click", async () => {
-      try {
-        await signInWithPopup(auth, provider);
-        authModal.style.display = "none";
-      } catch (err) {
-        alert("Google sign-in error: " + err.message);
-      }
-    });
+  try {
+    await signInWithPopup(auth, provider);
+    authModal.style.display = "none";
+    window.location.href = "Techniciansdashboard.html";
+  } catch (err) {
+    alert("Google sign-in error: " + err.message);
+  }
+});
 
     // Logout
     logoutBtn.addEventListener("click", async () => {
       await signOut(auth);
       alert("Logged out");
+      location.reload();
     });
   };
 </script>
