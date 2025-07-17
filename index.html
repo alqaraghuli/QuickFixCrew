@@ -242,7 +242,13 @@
       <h3>3. Job Completed</h3>
       <p>Hire, complete your job, and rate your experience for future customers.</p>
     </div>
+
   </section>
+<section style="padding: 40px; background: #fff; border-radius: 8px; max-width: 900px; margin: auto;">
+  <h2 style="color: #2e86de; text-align: center; margin-bottom: 20px;">Available Technician Services</h2>
+  <div id="technicianPosts" style="display: flex; flex-direction: column; gap: 20px;"></div>
+</section>
+
  <!-- 👷‍♂️ Technician Media Upload Section START -->
 <section id="tech-upload" style="padding: 40px 20px; background: #ffffff; max-width: 800px; margin: 60px auto; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
   <h2 style="text-align: center; color: #2e86ab; margin-bottom: 30px;">Technician Media Upload</h2>
@@ -419,6 +425,36 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
       location.reload();
     });
   };
+    // Load Technician Posts to Homepage
+    const postsContainer = document.getElementById("technicianPosts");
+    if (postsContainer) {
+      const postsQuery = await getDocs(collection(db, "technician_posts"));
+      postsContainer.innerHTML = "";
+      postsQuery.forEach(docSnap => {
+        const data = docSnap.data();
+        const postDiv = document.createElement("div");
+        postDiv.className = "post-card";
+postDiv.innerHTML = `
+  <div style="padding: 20px; background: #ffffff; border-radius: 10px; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+    <h3 style="color: #2e86de; margin-bottom: 10px;">${data.service} - ${data.name}</h3>
+    <p><strong>📍 Location:</strong> ${data.location}</p>
+    <p><strong>🛠 Experience:</strong> ${data.experience}</p>
+    <p><strong>📝 Description:</strong> ${data.description}</p>
+    ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.service}" width="220" style="margin-top: 12px; border-radius: 6px;" />` : ""}
+    
+    <div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px;">
+      <button style="padding: 8px 14px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">✅ Accept</button>
+      <button style="padding: 8px 14px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">💬 Message</button>
+      <button style="padding: 8px 14px; background: #ffc107; color: black; border: none; border-radius: 5px; cursor: pointer;">⭐ Rate</button>
+    </div>
+  </div>
+  <hr style="margin: 20px 0; border: none; border-top: 1px solid #ccc;" />
+`;
+
+        postsContainer.appendChild(postDiv);
+      });
+    }
+
 </script>
 </body>
 </html>
