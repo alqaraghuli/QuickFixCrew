@@ -319,6 +319,29 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
+const wireActionButtons = () => {
+  document.querySelectorAll(".post-card button").forEach(btn => {
+    if (btn.textContent.includes("Accept")) {
+      btn.addEventListener("click", () => {
+        alert("You have accepted this technician's service.");
+      });
+    } else if (btn.textContent.includes("Message")) {
+      btn.addEventListener("click", () => {
+        const msg = prompt("Enter your message to the technician:");
+        if (msg) alert("Your message has been sent.");
+      });
+    } else if (btn.textContent.includes("Rate")) {
+      btn.addEventListener("click", () => {
+        const rate = prompt("Rate this technician (1–5):");
+        if (rate >= 1 && rate <= 5) {
+          alert(`Thanks! You rated this technician ${rate}/5.`);
+        } else {
+          alert("Invalid rating.");
+        }
+      });
+    }
+  });
+};
 
   window.onload = () => {
     const searchForm = document.getElementById("searchForm");
@@ -454,6 +477,7 @@ postDiv.innerHTML = `
         postsContainer.appendChild(postDiv);
       });
     }
+       wireActionButtons(); // 
 
 </script>
 </body>
